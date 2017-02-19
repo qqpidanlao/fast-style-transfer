@@ -13,13 +13,16 @@ DEVICES = 'CUDA_VISIBLE_DEVICES'
 def optimize(content_targets, style_target, content_weight, style_weight,
              tv_weight, vgg_path, epochs=2, print_iterations=1000,
              batch_size=4, save_path='saver/fns.ckpt', slow=False,
-             learning_rate=1e-3, debug=False):
+             learning_rate=1e-3, debug=False, max_sample=4000):
     if slow:
         batch_size = 1
     mod = len(content_targets) % batch_size
     if mod > 0:
         print("Train set has been trimmed slightly..")
         content_targets = content_targets[:-mod]
+
+    if len(content_targets) > max_sample:
+        content_targets = content_targets[:max_sample]
 
     style_features = {}
 

@@ -1,7 +1,7 @@
 from __future__ import print_function
 import sys, os, pdb
 sys.path.insert(0, 'src')
-import numpy as np, scipy.misc 
+import numpy as np, scipy.misc
 from optimize import optimize
 from argparse import ArgumentParser
 from utils import save_img, get_img, exists, list_files
@@ -20,6 +20,8 @@ TRAIN_PATH = 'data/train2014'
 BATCH_SIZE = 4
 DEVICE = '/gpu:0'
 FRAC_GPU = 1
+MAX_SAMPLE = 4000
+
 
 def build_parser():
     parser = ArgumentParser()
@@ -69,7 +71,7 @@ def build_parser():
                         dest='content_weight',
                         help='content weight (default %(default)s)',
                         metavar='CONTENT_WEIGHT', default=CONTENT_WEIGHT)
-    
+
     parser.add_argument('--style-weight', type=float,
                         dest='style_weight',
                         help='style weight (default %(default)s)',
@@ -79,7 +81,7 @@ def build_parser():
                         dest='tv_weight',
                         help='total variation regularization weight (default %(default)s)',
                         metavar='TV_WEIGHT', default=TV_WEIGHT)
-    
+
     parser.add_argument('--learning-rate', type=float,
                         dest='learning_rate',
                         help='learning rate (default %(default)s)',
@@ -108,7 +110,7 @@ def _get_files(img_dir):
     files = list_files(img_dir)
     return [os.path.join(img_dir,x) for x in files]
 
-    
+
 def main():
     parser = build_parser()
     options = parser.parse_args()
@@ -126,7 +128,8 @@ def main():
         "print_iterations":options.checkpoint_iterations,
         "batch_size":options.batch_size,
         "save_path":os.path.join(options.checkpoint_dir,'fns.ckpt'),
-        "learning_rate":options.learning_rate
+        "learning_rate":options.learning_rate,
+        "max_sample":MAX_SAMPLE
     }
 
     if options.slow:
