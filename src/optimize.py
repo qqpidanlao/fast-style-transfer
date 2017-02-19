@@ -19,7 +19,7 @@ def optimize(content_targets, style_target, content_weight, style_weight,
     mod = len(content_targets) % batch_size
     if mod > 0:
         print("Train set has been trimmed slightly..")
-        content_targets = content_targets[:-mod] 
+        content_targets = content_targets[:-mod]
 
     style_features = {}
 
@@ -72,7 +72,7 @@ def optimize(content_targets, style_target, content_weight, style_weight,
             size = height * width * filters
             feats = tf.reshape(layer, (bs, height * width, filters))
             feats_T = tf.transpose(feats, perm=[0,2,1])
-            grams = tf.batch_matmul(feats_T, feats) / size
+            grams = tf.matmul(feats_T, feats) / size
             style_gram = style_features[style_layer]
             style_losses.append(2 * tf.nn.l2_loss(grams - style_gram)/style_gram.size)
 
